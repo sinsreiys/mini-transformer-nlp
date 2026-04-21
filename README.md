@@ -14,14 +14,6 @@
 
 ---
 
-<div align="center">
-
-[![🚀 Demo en Vivo](https://img.shields.io/badge/🚀%20Demo%20en%20Vivo-Probar%20Ahora-brightgreen?style=for-the-badge)](https://TU-URL-AQUI.com)
-
-</div>
-
----
-
 ## 🎯 Descripción
 
 **Mini Transformer NLP** es un proyecto que demuestra capacidades avanzadas en el procesamiento de lenguaje natural (NLP) y el despliegue de aplicaciones web mediante **Flask**. Ofrece una herramienta eficiente para la **generación y predicción de texto**, construida sobre una arquitectura Transformer personalizada implementada íntegramente desde cero con PyTorch.
