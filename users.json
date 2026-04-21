@@ -1,0 +1,8 @@
+{
+  "sara": "scrypt:32768:8:1$82KYm6dav7NxMBlZ$4b57692e4ecb2abd292360875c60c78d980c7440e6a96b9d369bacd2874e527d2ee7a7462e2f0dba91edb5d0533cfe7f481e426cf8398274bf7295da3bc31f9d",
+  "pepe": {
+    "password": "scrypt:32768:8:1$y7N43hjHXS5zoTXQ$4686d98e542d2b0e5b8d832aca171f8b0208037462be0b4bf77b9e7f8225f697a87e8d29ad70fbb5864cd75b5e350371f69c626fef209c5e58d9fe0efbf9e4d2",
+    "profile_photo": null,
+    "display_name": "pepe"
+  }
+}

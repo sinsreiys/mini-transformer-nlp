@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso | Mini Transformer</title>
+    <style>
+        :root {
+            --bg: #030308;
+            --card-bg: rgba(18, 18, 42, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f0f0f5;
+            --accent: #00e5ff;
+            --btn-grad: linear-gradient(135deg, #00e5ff 0%, #7b2ff7 100%);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            padding: 45px;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 30px; font-weight: 800; }
+
+        .tabs {
+            display: flex;
+            background: rgba(0,0,0,0.3);
+            border-radius: 14px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #888;
+        }
+
+        .tab.active {
+            background: var(--btn-grad);
+            color: white;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--btn-grad);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+
+        button:hover { transform: translateY(-3px); }
+
+        #msg { margin-top: 20px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <h1>Mini Transformer</h1>
+    <div class="tabs">
+        <div class="tab active" id="tab-login" onclick="setMode('login')">Entrar</div>
+        <div class="tab" id="tab-register" onclick="setMode('register')">Registrar</div>
+    </div>
+    
+    <input type="text" id="username" placeholder="Usuario">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button onclick="doAuth()" id="btn-action">Continuar</button>
+    <div id="msg"></div>
+</div>
+
+<script>
+    let mode = "login";
+
+    function setMode(m) {
+        mode = m;
+        document.getElementById('tab-login').classList.toggle('active', m === 'login');
+        document.getElementById('tab-register').classList.toggle('active', m === 'register');
+        document.getElementById('btn-action').textContent = m === 'login' ? 'Entrar' : 'Registrarse';
+    }
+
+    async function doAuth() {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        const msg = document.getElementById('msg');
+
+        try {
+            const res = await fetch(`/api/${mode}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username: u, password: p})
+            });
+            const d = await res.json();
+            if (d.success) {
+                window.location.href = '/';
+            } else {
+                msg.textContent = d.error || "Error";
+                msg.style.color = "#ff6b6b";
+            }
+        } catch(e) {
+            msg.textContent = "Error de conexión";
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Mini Transformer | Neural Hub</title>
+    <style>
+        /* =========================================
+           1. Paletas de Colores (Exigencia de Temas)
+           ========================================= */
+        :root {
+            /* Tema Oscuro Cyberpunk (Defecto) */
+            --bg: #030308;
+            --card-bg: rgba(18, 18, 42, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f0f0f5;
+            --text-muted: #8a8aa3;
+            --accent: #00e5ff;
+            --accent-glow: rgba(0, 229, 255, 0.4);
+            --btn-grad: linear-gradient(135deg, #00e5ff 0%, #7b2ff7 100%);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        body.light {
+            --bg: #f0f4ff;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(0, 0, 0, 0.05);
+            --text-main: #1a1a2e;
+            --text-muted: #606080;
+            --accent: #2980b9; /* Azul Mar */
+            --accent-glow: rgba(41, 128, 185, 0.2);
+            --btn-grad: linear-gradient(135deg, #2980b9 0%, #6dd5fa 100%);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        }
+
+        body.pink {
+            --bg: #fff0f5;
+            --card-bg: rgba(255, 228, 230, 0.7);
+            --card-border: rgba(136, 19, 55, 0.1);
+            --text-main: #881337;
+            --text-muted: #a16277;
+            --accent: #e11d48;
+            --accent-glow: rgba(225, 29, 72, 0.2);
+            --btn-grad: linear-gradient(135deg, #e11d48 0%, #fda4af 100%);
+            --shadow: 0 8px 32px rgba(136, 19, 55, 0.1);
+        }
+
+        body.green {
+            --bg: #f0fdf4;
+            --card-bg: rgba(220, 252, 231, 0.7);
+            --card-border: rgba(22, 101, 52, 0.1);
+            --text-main: #166534;
+            --text-muted: #60a178;
+            --accent: #22c55e;
+            --accent-glow: rgba(34, 197, 94, 0.2);
+            --btn-grad: linear-gradient(135deg, #22c55e 0%, #86efac 100%);
+            --shadow: 0 8px 32px rgba(22, 101, 52, 0.1);
+        }
+
+        body.bubble {
+            --bg: #e0f7fa;
+            --card-bg: rgba(178, 235, 242, 0.7);
+            --card-border: rgba(0, 96, 100, 0.1);
+            --text-main: #006064;
+            --text-muted: #4f9a9c;
+            --accent: #00bcd4;
+            --accent-glow: rgba(0, 188, 212, 0.2);
+            --btn-grad: linear-gradient(135deg, #00bcd4 0%, #80deea 100%);
+            --shadow: 0 8px 32px rgba(0, 96, 100, 0.1);
+        }
+
+        /* =========================================
+           2. Estilos Base (Estética y Reset)
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* =========================================
+           3. Layout Principal (Grid y Organización)
+           ========================================= */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        /* =========================================
+           4. Componentes UI (Cards, Inputs, Btns)
+           ========================================= */
+        
+        /* Glassmorphism Card Premium */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            padding: 35px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efecto de brillo sutil en el borde superior */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--btn-grad);
+            opacity: 0.5;
+        }
+
+        /* Títulos */
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-title span.icon {
+            font-size: 1.8rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+            background: var(--btn-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1.5px;
+        }
+
+        /* Controles de Header (Theme, Idioma) */
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* Inputs, Textareas y Selects Estéticos */
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            color: var(--text-main);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        /* Fix para tema claro/rosa donde el input negro queda mal */
+        body.light input, body.pink input, body.green input, body.bubble input,
+        body.light textarea, body.pink textarea, body.green textarea, body.bubble textarea {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        textarea {
+            resize: none;
+            height: 120px;
+        }
+
+        /* Botón Premium con Gradiente y Animación */
+        .btn-predict {
+            width: 100%;
+            padding: 16px;
+            background: var(--btn-grad);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            overflow: hidden;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+        }
+
+        .btn-predict:active {
+            transform: translateY(-1px);
+        }
+
+        /* Resultados de Predicción */
+        #res-predict {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .prediction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+        }
+
+        .prediction-item .word {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .prediction-item .prob {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="card full-width">
+        <div class="controls-header">
+            <select id="theme-selector" onchange="applyTheme(this.value)" style="width: auto; margin-bottom: 0;">
+                <option value="dark">🌙 Oscuro Cyber</option>
+                <option value="light">☀️ Claro Mar</option>
+                <option value="pink">🌸 Rosa Pastel</option>
+                <option value="green">🍃 Verde Suave</option>
+                <option value="bubble">🫧 Cian Bubble</option>
+            </select>
+            
+            <select id="lang-selector" onchange="changeLanguage(this.value)" style="width: auto; margin-bottom: 0;">
+                <option value="es">🇪🇸 Español</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="zh">🇨🇳 中文</option>
+            </select>
+        </div>
+        
+        <h1 id="main-title">🧠 Mini Transformer</h1>
+    </div>
+
+    <div class="card">
+        <div class="card-title">
+            <span class="icon">🔮</span>
+            <span id="title-predict">Predicción</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -10px;">Escribe el contexto y la IA intentará completar la frase.</p>
+        <input type="text" id="input-predict" placeholder="ej: el gato come..." autocomplete="off">
+        <button class="btn-predict" onclick="doPredict()" id="btn-predict-text">Predecir Palabra</button>
+        <div id="res-predict">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">
+            <span class="icon">📊</span>
+            <span id="title-status">Estado del Modelo</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+            <div style="text-align: center; border-right: 1px solid var(--card-border);">
+                <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent);">38</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Vocabulario</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent);">0.1142</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Pérdida (Loss)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card full-width">
+        <div class="card-title">
+            <span class="icon">🎓</span>
+            <span id="title-train">Entrenamiento en vivo</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: -10px;">Enseña nuevas frases al modelo para que aprenda. Usa un formato claro.</p>
+        <textarea id="input-train" placeholder="ej: la inteligencia artificial es el futuro de la tecnología..."></textarea>
+        <button class="btn-predict" onclick="doTrain()" id="btn-train-text">Actualizar Base de Datos</button>
+    </div>
+
+</div>
+
+<script>
+    // --- GESTIÓN DE TEMAS (Exigencias de color) ---
+    function applyTheme(theme) {
+        document.body.className = theme === 'dark' ? '' : theme;
+        localStorage.setItem("nn-theme", theme);
+    }
+
+    // --- GESTIÓN DE IDIOMAS (Exigencia i18n) ---
+    const langData = {
+        es: { title: "Mini Transformer", predict_title: "Predicción", predict_btn: "Predecir Palabra", status_title: "Estado del Modelo", train_title: "Entrenamiento en vivo", train_btn: "Actualizar Base de Datos", predict_ph: "ej: el gato come...", train_ph: "ej: la inteligencia artificial es...", alert_train: "✓ Modelo actualizado correctamente" },
+        en: { title: "Mini Transformer", predict_title: "Prediction", predict_btn: "Predict Next Word", status_title: "Model Status", train_title: "Live Training", train_btn: "Update Database", predict_ph: "eg: the cat eats...", train_ph: "eg: artificial intelligence is...", alert_train: "✓ Model updated successfully" },
+        de: { title: "Mini Transformer", predict_title: "Vorhersage", predict_btn: "Wort Vorhersagen", status_title: "Modellstatus", train_title: "Live-Training", train_btn: "Datenbank Aktualisieren", predict_ph: "zB: die katze frisst...", train_ph: "zB: künstliche intelligenz ist...", alert_train: "✓ Modell erfolgreich aktualisiert" },
+        zh: { title: "迷你变形金刚", predict_title: "预测", predict_btn: "预测下一个词", status_title: "模型状态", train_title: "实时训练", train_btn: "更新数据库", predict_ph: "例如：猫吃...", train_ph: "例如：人工智能是...", alert_train: "✓ 模型更新成功" }
+    };
+
+    function changeLanguage(lang) {
+        const t = langData[lang];
+        document.getElementById("main-title").textContent = t.title;
+        document.getElementById("title-predict").textContent = t.predict_title;
+        document.getElementById("btn-predict-text").textContent = t.predict_btn;
+        document.getElementById("title-status").textContent = t.status_title;
+        document.getElementById("title-train").textContent = t.train_title;
+        document.getElementById("btn-train-text").textContent = t.train_btn;
+        document.getElementById("input-predict").placeholder = t.predict_ph;
+        document.getElementById("input-train").placeholder = t.train_ph;
+        localStorage.setItem("nn-lang", lang);
+    }
+
+    // --- INTERACCIÓN CON EL BACKEND (Funcionalidad) ---
+    async function doPredict() {
+        const input = document.getElementById('input-predict').value;
+        const resDiv = document.getElementById('res-predict');
+        resDiv.innerHTML = '<div style="color:var(--text-muted); text-align:center;">⌛ Pensando...</div>';
+
+        try {
+            const r = await fetch('/predict', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ words: input }) });
+            const d = await r.json();
+            
+            if (d.results && d.results.length > 0) {
+                resDiv.innerHTML = d.results.map(x => `<div class="prediction-item"><span class="word">${x.word}</span><span class="prob">${x.prob}%</span></div>`).join('');
+            } else {
+                resDiv.innerHTML = '<div class="prediction-item" style="color:var(--text-muted); justify-content:center;">(Sin predicciones claras)</div>';
+            }
+        } catch (e) {
+            resDiv.innerHTML = '<div class="prediction-item" style="color:#ff6b6b; justify-content:center;">⚠ Error de conexión</div>';
+        }
+    }
+
+    async function doTrain() {
+        const text = document.getElementById('input-train').value;
+        const lang = document.getElementById("lang-selector").value;
+        const btn = document.getElementById("btn-train-text");
+        btn.textContent = "... Entrenando ...";
+        btn.style.opacity = 0.7;
+
+        try {
+            const r = await fetch('/train', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+            const d = await r.json();
+            
+            if (d.success) {
+                alert(langData[lang].alert_train);
+                document.getElementById('input-train').value = '';
+                // Aquí podrías recargar el estado del modelo si tuvieras un endpoint de estatus
+            }
+        } catch (e) {
+            alert("Error al conectar con el servidor para entrenar.");
+        } finally {
+            btn.textContent = langData[lang].train_btn;
+            btn.style.opacity = 1;
+        }
+    }
+
+    // --- INICIALIZACIÓN (Cargar preferencias guardadas) ---
+    const savedTheme = localStorage.getItem("nn-theme") || "dark";
+    applyTheme(savedTheme);
+    document.getElementById("theme-selector").value = savedTheme;
+
+    const savedLang = localStorage.getItem("nn-lang") || "es";
+    changeLanguage(savedLang);
+    document.getElementById("lang-selector").value = savedLang;
+
+</script>
+</body>
+</html>
